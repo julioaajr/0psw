@@ -13,6 +13,11 @@
 {% endblock %}
 </head>
 <body>
+    <a href="{% url "login" %}" >|  u login  |</a>
+    <a href="{% url "cadastro" %}" > u cadastro  |</a>
+    <a href="{% url "solicitar_exames" %}" >e solicitar  |</a>
+    <a href="{% url "fechar_pedido" %}" > e fechar  |</a>
+
 {% block 'conteudo' %}{% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

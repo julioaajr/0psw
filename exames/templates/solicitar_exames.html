@@ -11,12 +11,10 @@
 	<div class="row">
 		<div class="col-md">
 			<h3 class="font-destaque">Solicitar exames</h3>
-            {% for exame in tipos_exames %}
-                <h1>{{exame.nome}} </h1>
-            {% endfor %}
+
 			<form action="{% url 'solicitar_exames' %}" method="POST"> {% csrf_token %}
 				<label for="">Selecione os exames para realizar</label>
-				<select class="select form-control bg-select" multiple name="exames">
+				<select class="select form-control bg-select" multiple name="exames" >
                     {% for exame in tipos_exames %}
                         
                         <option class="opt" value={{exame.id}}>{{exame.nome}}</option>
@@ -59,7 +57,7 @@
 			<br>
 			<form action="{% url 'fechar_pedido' %}" method="POST"> {% csrf_token %}
                 {% for exame in solicitacao_exames %}
-                <input type = "hidden" value = {{exame.id}}>
+                <input type = "hidden" value = {{exame.id}} name= "exames">
                 {% endfor %}
 				<button class="btn-secundario">Fechar pedido</button>
 			</form>
