@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages import constants
 from django.contrib import messages
 from django.contrib.auth import authenticate, login,logout
+
 # Create your views here.
 
 
@@ -54,6 +55,8 @@ def Cadastro(request):
 
 def Login(request):
     if request.method == "GET":
+        if request.user.is_authenticated:
+            return redirect('solicitar_exames')
         return render(request, "login.html")
 
     if request.method == "POST":
@@ -63,14 +66,14 @@ def Login(request):
 
         if user:
             login(request,user)
-            return redirect('/')
+            return redirect('solicitar_exames')
         else:
             messages.add_message(request, constants.ERROR, 'Login ou senha invalidos')
             return redirect ('login')
         return HttpResponse (f"{username} -- {senha}")
 
 
-def Teste(request):
-    x = str(request.user)
+def Logout(request):
+    print('usuario deslogado')
     logout(request)
-    return HttpResponse(f'anterior {x} --- {request.user}')
+    return redirect('login')

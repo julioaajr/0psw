@@ -42,5 +42,5 @@ class PedidosExames(models.Model):
     agendado = models.BooleanField(default=True)
     data = models.DateField()
     def __str__(self):
-        return f'{self.usuario} | {self.data}'
+        return f'{self.id} | {self.usuario} | {self.data}'
     

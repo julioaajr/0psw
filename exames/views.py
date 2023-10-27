@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import *
 from datetime import datetime
+from django.contrib import messages
+from django.contrib.messages import constants
 
 # Create your views here.
 
@@ -47,5 +49,28 @@ def Fechar_pedido(request):
         pedido_exame.exames.add(solicitacao_exames_temp)
 
     pedido_exame.save()
+    messages.add_message(request, constants.SUCCESS, 'Pedido SALVO COM SUCESSO')
+    return redirect('gerenciar_pedidos')
 
-    return HttpResponse('teste')
+
+@login_required
+def Gerenciar_pedidos(request):
+    pedidos_exames = PedidosExames.objects.filter(usuario = request.user)
+    print(pedidos_exames)
+    return render(request, 'gerenciar_pedidos.html', {'pedidos_exames':pedidos_exames})
+
+
+@login_required
+def Cancelar_pedido(request, pedido_id):
+    pedido_exames = PedidosExames.objects.get(id = pedido_id)
+    if pedido_exames.usuario == request.user:
+        pedido_exames.agendado = False
+        pedido_exames.save()
+        messages.add_message(request,constants.SUCCESS,'Pedido Cancelado')
+        return redirect('gerenciar_pedidos')
+    messages.add_message(request,constants.ERROR,'Erro o pedido não lhe pertence')
+    return redirect('gerenciar_pedidos')
+
+@login_required
+def Gerenciar_exames(request):
+    return HttpResponse('a')
