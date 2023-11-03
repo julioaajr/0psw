@@ -35,6 +35,9 @@ class SolicitacaoExame(models.Model):
     def __str__(self):
         return f'{self.usuario} | {self.exame.nome}'
     
+    def badge_template(self):
+        return self.status
+    
 
 class PedidosExames(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)

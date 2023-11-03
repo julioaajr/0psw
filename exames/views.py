@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 
 # Create your views here.
-
+# 01:51:55
 @login_required
 def Solicitar_exames(request):
     tipos_exames = TipoExames.objects.all()
@@ -73,4 +73,5 @@ def Cancelar_pedido(request, pedido_id):
 
 @login_required
 def Gerenciar_exames(request):
-    return HttpResponse('a')
+    exames = SolicitacaoExame.objects.filter(usuario=request.user)
+    return render(request, 'gerenciar_exames.html', {'exames': exames})
