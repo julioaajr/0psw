@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 # Create your models here.
 
@@ -23,7 +24,7 @@ class TipoExames(models.Model):
 
 class SolicitacaoExame(models.Model):
     choice_status = (
-    ('E', 'Em análise'),
+    ('E', 'Em Análise'),
     ('F', 'Finalizado')
     )
     usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -33,10 +34,17 @@ class SolicitacaoExame(models.Model):
     requer_senha = models.BooleanField(default=False)
     senha = models.CharField(max_length=6, null=True, blank=True)
     def __str__(self):
-        return f'{self.usuario} | {self.exame.nome}'
+        return f'{self.usuario} | {self.exame.nome} | {self.get_status_display()}'
     
     def badge_template(self):
-        return self.status
+        if self.status == 'E':
+            classe = 'bg-warning text-dark'
+        else:
+            classe = 'bg-success text-dark'
+        
+        #print(self.get_status_display())
+        
+        return mark_safe(f'<span class="badge {classe}"> {self.get_status_display()} </span>')
     
 
 class PedidosExames(models.Model):
@@ -47,3 +55,4 @@ class PedidosExames(models.Model):
     def __str__(self):
         return f'{self.id} | {self.usuario} | {self.data}'
     
+

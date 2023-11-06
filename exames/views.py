@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 
 # Create your views here.
-# 01:51:55
+# Aula 3
 @login_required
 def Solicitar_exames(request):
     tipos_exames = TipoExames.objects.all()
@@ -56,7 +56,6 @@ def Fechar_pedido(request):
 @login_required
 def Gerenciar_pedidos(request):
     pedidos_exames = PedidosExames.objects.filter(usuario = request.user)
-    print(pedidos_exames)
     return render(request, 'gerenciar_pedidos.html', {'pedidos_exames':pedidos_exames})
 
 
@@ -73,5 +72,44 @@ def Cancelar_pedido(request, pedido_id):
 
 @login_required
 def Gerenciar_exames(request):
-    exames = SolicitacaoExame.objects.filter(usuario=request.user)
+    pedido =  PedidosExames.objects.filter(usuario = request.user, agendado = True)
+    exames = SolicitacaoExame.objects.filter(pedidosexames__in=pedido)
+    #print(x)
+    #exames = SolicitacaoExame.objects.filter(usuario=request.user)
     return render(request, 'gerenciar_exames.html', {'exames': exames})
+
+
+
+
+@login_required
+def Permitir_abrir_exame(request, exame_id):
+    exame = SolicitacaoExame.objects.get(id = exame_id, usuario = request.user)
+    if not exame.requer_senha:
+        if exame.resultado:
+            return redirect(exame.resultado.url)
+        else:
+            return HttpResponse ('Sem laudo para esse exame')        
+    else:
+        if exame.resultado:
+            return redirect('solicitar_senha_exame' ,exame_id = exame_id)
+        else:
+            return HttpResponse ('Sem laudo para esse exame')      
+    
+    return redirect ('Sem laudo incluso')
+
+
+@login_required
+def Solicitar_senha_exame(request, exame_id):
+    exame = SolicitacaoExame.objects.get(id = exame_id, usuario = request.user)
+    if request.method == 'GET':
+        return render(request,'solicitar_senha_exame.html',{'exame':exame})
+    elif request.method == 'POST':
+        senha = request.POST.get('senha')
+        if senha == exame.senha:
+            if exame.resultado:
+                return redirect(exame.resultado.url)
+            else:
+                return HttpResponse ('Sem laudo para esse exame')      
+        else:
+            messages.add_message(request,constants.ERROR,'Senha Incorreta')
+            return redirect('solicitar_senha_exame' ,exame_id = exame_id)    
