@@ -56,7 +56,7 @@ def Cadastro(request):
 def Login(request):
     if request.method == "GET":
         if request.user.is_authenticated:
-            return redirect('solicitar_exames')
+            messages.add_message(request, constants.SUCCESS, f'Usuario {request.user.username} já esta logado')
         return render(request, "login.html")
 
     if request.method == "POST":

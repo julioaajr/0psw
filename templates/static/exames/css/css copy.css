@@ -31,3 +31,10 @@ body{
     border-color: #838FFF;
     }
 
+    * {
+        color: white;
+    }
+    
+    p{
+        color: black;
+    }
